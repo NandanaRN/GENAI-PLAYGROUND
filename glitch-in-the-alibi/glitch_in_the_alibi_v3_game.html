@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Glitch in the Alibi</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap');
+:root{
+  --c-bg:#0D0D0F;
+  --c-surface:#16161A;
+  --c-card:#1E1E24;
+  --c-border:#2A2A34;
+  --c-accent:#E8C547;
+  --c-accent2:#E05C3A;
+  --c-text:#E8E6DF;
+  --c-muted:#7A7870;
+  --c-green:#4CAF7D;
+  --c-red:#E05C3A;
+  --c-sus:#E05C3A;
+  --ff-title:'Bebas Neue',sans-serif;
+  --ff-mono:'Share Tech Mono',monospace;
+  --ff-body:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+#G{background:var(--c-bg);color:var(--c-text);font-family:var(--ff-body);min-height:680px;width:100%;position:relative;overflow:hidden;}
+.screen{display:none;width:100%;min-height:680px;flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+.screen.on{display:flex;}
+
+/* INTRO */
+#s-intro{background:var(--c-bg);gap:0.5rem;}
+.intro-badge{width:90px;height:90px;border:3px solid var(--c-accent);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;animation:pulse-ring 2s infinite;}
+@keyframes pulse-ring{0%,100%{border-color:var(--c-accent);}50%{border-color:#6B5C1F;}}
+.intro-case{font-family:var(--ff-mono);color:var(--c-accent);font-size:12px;letter-spacing:.2em;}
+.intro-title{font-family:var(--ff-title);font-size:clamp(38px,7vw,64px);letter-spacing:.05em;line-height:1;text-align:center;}
+.intro-sub{font-family:var(--ff-mono);font-size:11px;color:var(--c-muted);letter-spacing:.15em;margin-top:.4rem;}
+.intro-typewriter{font-family:var(--ff-mono);font-size:13px;color:var(--c-accent);margin-top:1.5rem;min-height:1.4em;text-align:center;}
+.btn-game{font-family:var(--ff-title);font-size:18px;letter-spacing:.1em;background:var(--c-accent);color:#0D0D0F;border:none;padding:.7rem 2.2rem;cursor:pointer;margin-top:1.5rem;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
+.btn-game:hover{background:#F5D55A;}
+.btn-game.red{background:var(--c-accent2);color:#fff;}
+.btn-game.red:hover{background:#F07050;}
+.btn-ghost{font-family:var(--ff-mono);font-size:12px;background:transparent;color:var(--c-muted);border:1px solid var(--c-border);padding:.5rem 1.2rem;cursor:pointer;margin-top:.6rem;}
+.btn-ghost:hover{border-color:var(--c-accent);color:var(--c-accent);}
+
+/* API CONFIG PANEL */
+.api-box {background:var(--c-card);border:1px solid var(--c-border);border-radius:4px;padding:1rem;margin-top:1rem;width:100%;max-width:320px;display:flex;flex-direction:column;gap:0.5rem;}
+.api-box label {font-family:var(--ff-mono);font-size:11px;color:var(--c-accent);letter-spacing:0.05em;}
+.api-box input {background:var(--c-bg);border:1px solid var(--c-border);border-radius:4px;padding:0.4rem 0.6rem;color:var(--c-text);font-family:var(--ff-mono);font-size:12px;}
+.api-box input:focus {outline:1px solid var(--c-accent);}
+
+/* BRIEFING */
+#s-brief{gap:1.2rem;padding:1.5rem 2rem;align-items:stretch;justify-content:flex-start;}
+.brief-header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--c-border);padding-bottom:.75rem;}
+.brief-badge{font-family:var(--ff-mono);font-size:11px;color:var(--c-accent);letter-spacing:.15em;}
+.victim-card{background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-accent2);border-radius:4px;padding:1.25rem 1.5rem;display:grid;grid-template-columns:80px 1fr;gap:1.2rem;align-items:center;}
+.victim-avatar{width:80px;height:80px;background:#24181A;border:2px solid var(--c-accent2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:32px;}
+.victim-name{font-family:var(--ff-title);font-size:28px;letter-spacing:.05em;color:var(--c-text);}
+.victim-tag{font-family:var(--ff-mono);font-size:11px;color:var(--c-accent2);letter-spacing:.1em;margin-top:2px;}
+.victim-detail{font-size:13px;color:#B0ADA5;line-height:1.55;margin-top:.5rem;}
+.fact-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.fact-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:4px;padding:.85rem 1rem;}
+.fact-label{font-family:var(--ff-mono);font-size:10px;color:var(--c-muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.3rem;}
+.fact-val{font-size:13px;color:var(--c-text);line-height:1.4;}
+.scene-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:4px;padding:1rem 1.2rem;}
+.scene-label{font-family:var(--ff-mono);font-size:10px;color:var(--c-muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.4rem;}
+.scene-text{font-size:13px;color:#B0ADA5;line-height:1.6;}
+
+/* SUSPECTS */
+#s-suspects{gap:1.5rem;padding:1.5rem 2rem;align-items:stretch;justify-content:flex-start;}
+.sus-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--c-border);padding-bottom:.75rem;}
+.sus-title{font-family:var(--ff-title);font-size:24px;letter-spacing:.08em;}
+.sus-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.sus-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:6px;padding:1.2rem;display:flex;flex-direction:column;gap:.6rem;cursor:pointer;transition:border-color .15s;}
+.sus-card:hover{border-color:var(--c-accent);}
+.sus-avatar{width:54px;height:54px;border-radius:4px;background:#1A1A22;border:2px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.sus-name{font-family:var(--ff-title);font-size:22px;letter-spacing:.05em;}
+.sus-role{font-family:var(--ff-mono);font-size:10px;color:var(--c-accent);letter-spacing:.1em;}
+.sus-rel{font-size:12px;color:var(--c-muted);line-height:1.45;margin-top:.2rem;}
+.sus-alibi{background:#0D0D0F;border:1px solid var(--c-border);border-radius:4px;padding:.65rem .8rem;font-family:var(--ff-mono);font-size:11px;color:#9A9890;line-height:1.5;margin-top:.4rem;}
+
+/* GAME */
+#s-game{padding:0;align-items:stretch;justify-content:flex-start;gap:0;}
+.game-top{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:.6rem 1.2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.game-top-left{display:flex;flex-direction:column;gap:1px;}
+.game-case-num{font-family:var(--ff-mono);font-size:10px;color:var(--c-accent);letter-spacing:.15em;}
+.game-title{font-family:var(--ff-title);font-size:18px;letter-spacing:.05em;}
+.game-layout{display:grid;grid-template-columns:190px 1fr;flex:1;min-height:0;}
+.sidebar{background:var(--c-surface);border-right:1px solid var(--c-border);display:flex;flex-direction:column;gap:.6rem;padding:.8rem;overflow-y:auto;}
+.sidebar-section{font-family:var(--ff-mono);font-size:9px;color:var(--c-muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem;}
+.sus-tab{border:1px solid var(--c-border);border-radius:4px;padding:.6rem .75rem;cursor:pointer;transition:all .15s;background:transparent;}
+.sus-tab.active{border-color:var(--c-accent);background:rgba(232,197,71,.07);}
+.sus-tab:hover:not(.active){border-color:#444;}
+.sus-tab-name{font-family:var(--ff-title);font-size:15px;letter-spacing:.05em;}
+.sus-tab-role{font-family:var(--ff-mono);font-size:9px;color:var(--c-muted);margin-top:1px;}
+.meter-wrap{margin-top:.3rem;}
+.meter-label{font-family:var(--ff-mono);font-size:9px;color:var(--c-muted);display:flex;justify-content:space-between;margin-bottom:3px;}
+.meter-track{background:#1A1A20;border-radius:2px;height:6px;overflow:hidden;}
+.meter-fill{height:100%;border-radius:2px;transition:width .4s;}
+.ev-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:4px;padding:.5rem .65rem;font-size:11.5px;cursor:pointer;transition:border-color .15s;}
+.ev-item:hover{border-color:var(--c-accent);}
+.ev-item.found{border-color:#4CAF7D;}
+.ev-name{font-family:var(--ff-mono);font-size:10px;color:var(--c-accent);display:block;margin-bottom:2px;}
+.ev-loc{font-size:10px;color:var(--c-muted);}
+.chat-area{display:flex;flex-direction:column;min-height:0;}
+.chat-header{background:var(--c-card);border-bottom:1px solid var(--c-border);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;flex-shrink:0;}
+.chat-avatar{width:36px;height:36px;border-radius:4px;background:#1A1A22;border:1px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.chat-suspect-name{font-family:var(--ff-title);font-size:17px;letter-spacing:.05em;}
+.chat-suspect-role{font-family:var(--ff-mono);font-size:9px;color:var(--c-muted);}
+.chat-msgs" class="chat-msgs"><span class="sr-only">Interrogation transcript</span></div>
+      <div class="chat-input-wrap">
+        <input type="text" id="chat-in" placeholder="Type your question and press Enter..." autocomplete="off"/>
+        <button class="send-btn" id="btn-send">ASK</button>
+      </div>
+    </div>
+  </div>
+  <div class="accuse-panel" id="accuse-panel">
+    <div class="accuse-modal">
+      <h3>FINAL ACCUSATION</h3>
+      <p>You have one shot. Name the killer. If you're wrong, they walk free. There's no second chance.</p>
+      <div class="accuse-choices" id="accuse-choices"></div>
+      <div class="accuse-actions">
+        <button class="btn-ghost" id="btn-cancel-accuse">Keep investigating</button>
+        <button class="btn-game red" id="btn-confirm-accuse" disabled>CONFIRM</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="s-verdict">
+  <div class="verdict-header">
+    <div style="font-family:var(--ff-mono);font-size:10px;color:var(--c-muted);letter-spacing:.15em;">CASE RESOLVED</div>
+    <div style="font-family:var(--ff-title);font-size:20px;letter-spacing:.06em;margin-top:2px;" id="verdict-case-title">—</div>
+  </div>
+  <div class="verdict-body">
+    <div class="stamp-wrap"><div class="stamp-text" id="verdict-stamp">—</div></div>
+    <div class="verdict-headline" id="verdict-headline">—</div>
+    <div class="verdict-cards" id="verdict-cards"></div>
+    <div class="verdict-reveal" id="verdict-reveal"></div>
+    <button class="btn-game" id="btn-new-case" style="margin-top:.5rem;">NEW CASE</button>
+  </div>
+</section>
+
+</div>
+<script>
+const CASES=[{id:"HARGROVE-114",emoji:"📚",victim:"Walter Hargrove",victim_detail:"Publishing magnate. Found face-down at his own mahogany desk, a bronze bookend missing from the shelf above him.",scene:"A locked study in a townhouse on Eldridge Lane, second floor, door deadbolted from the inside.",time_of_death:"Between 9:00 PM and 9:30 PM",method:"Single blow from a heavy bronze bookend to the back of the skull",suspects:["Mara Voss","Desmond Kray"],suspect_emojis:["👩‍💼","👨‍💼"],suspect_roles:["Editorial Director, Hargrove Publishing","Business Partner, Hargrove Publishing"],relationship:"Both business partners of the victim, both about to be cut from a lucrative buyout deal Hargrove had engineered to freeze them out.",shared_alibi:"Both claim they were together in the kitchen downstairs, brewing coffee and reviewing quarterly reports, the entire time.",alibi_location:"the kitchen",hard_facts:[{fact:"The kitchen radio was unplugged and silent — it had been broken for a week.",triggers:["radio","music","jazz","song on","news on"]},{fact:"The coffee machine was bone dry and cold — it was never turned on that night.",triggers:["smell of coffee","coffee was brewing","fresh coffee","brewed","pot of coffee"]},{fact:"The kitchen window is painted shut — it has not opened in years.",triggers:["opened the window","window was open","breeze","fresh air from outside","cracked the window"]},{fact:"The only light in the kitchen is a single harsh overhead bulb — no dimmer, no lamps.",triggers:["dim light","soft light","turned down the lights","mood lighting","warm glow"]},{fact:"The study door has a loud squeak audible from anywhere on the ground floor.",triggers:["didn't hear anything","quiet all night","no sounds","silent upstairs"]}],evidence:[{id:"bookend",name:"Missing bookend slot",location:"the study",found:false,reveal:"A gap on the shelf where one of a pair of bronze bookends should stand. The remaining bookend has a faint red stain on its base.",hint:"Ask a suspect if they noticed the bronze bookends during their time in the house."},{id:"mugs",name:"Two clean unused mugs",location:"the kitchen",found:false,reveal:"Two mugs in the drying rack, dusty rims. They have not been used or washed recently.",hint:"Ask a suspect to describe exactly what they drank that night."},{id:"contract",name:"Torn contract page",location:"the study floor",found:false,reveal:"A torn page from a buyout agreement. Handwritten margin note in red: 'BOTH OUT BY Q3.'",hint:"Ask a suspect what they knew about the upcoming buyout and their role in it."},{id:"footprint",name:"Faint footprint on stair",location:"the staircase",found:false,reveal:"A partial muddy footprint on the third stair from the top, dried at an angle suggesting hurried ascent.",hint:"Ask a suspect whether they went near the staircase at any point that evening."}]},{id:"DELACROIX-227",emoji:"🍷",victim:"Renee Delacroix",victim_detail:"Celebrated head chef of Le Sillage. Found at the bottom of the wine cellar stairs, neck broken.",scene:"The stone wine cellar beneath the kitchen of Le Sillage, accessible only via a steep internal staircase.",time_of_death:"Around 11:45 PM, during kitchen closing",method:"Fall down stone cellar stairs — head and neck trauma suggest she was pushed",suspects:["Theo Marchetti","Adaeze Nwosu"],suspect_emojis:["👨‍🍳","👩‍🍳"],suspect_roles:["Sous-Chef, Le Sillage","Head Sommelier, Le Sillage"],relationship:"Both competing for the head chef promotion Renee was about to announce at the end of that evening's service.",shared_alibi:"Both claim they were out back in the alley the entire time, sharing a cigarette and talking about the night's service.",alibi_location:"the back alley",hard_facts:[{fact:"It rained heavily from 11:15 PM onward — the alley had two inches of standing water.",triggers:["dry outside","no rain","clear sky","weather was fine","wasn't raining"]},{fact:"The alley's motion-sensor light has been broken for a month — total darkness outside.",triggers:["light was on","could see clearly","alley was lit","saw each other"]},{fact:"A delivery truck blocked most of the alley from 11 PM until after midnight.",triggers:["alley was clear","nothing blocking","empty alley","no truck"]},{fact:"The back door alarm chirps every time it opens — audible throughout the kitchen.",triggers:["door didn't make a sound","silent","no alarm","snuck out","slipped out quietly"]},{fact:"The dumpster was emptied that afternoon — completely empty, not overflowing.",triggers:["dumpster was full","trash piled","smell from the dumpster","overflowing bin"]}],evidence:[{id:"apron",name:"Damp chef's apron",location:"the staff lockers",found:false,reveal:"An apron still damp on the hook. The kitchen towels nearby are bone dry — odd for someone who claims they spent the break outside, not near the dishwashing station.",hint:"Ask a suspect why their apron was still damp after their cigarette break."},{id:"glass",name:"Shattered wine glass",location:"the cellar",found:false,reveal:"A wine glass shattered near the base of the cellar stairs — stem snapped clean, the kind of break from a sudden drop, not a fall from a shelf.",hint:"Ask a suspect whether they entered the wine cellar at all that night."},{id:"memo",name:"Promotion memo draft",location:"Renee's office",found:false,reveal:"A printed draft memo on Renee's desk, promoting one person to head chef, announcement scheduled for the end of the night. The name is still blank.",hint:"Ask a suspect what they expected to happen at the end of the night's service."},{id:"boots",name:"Mud-caked kitchen clogs",location:"the back hallway",found:false,reveal:"A pair of kitchen clogs with fresh mud in the tread — unusual, since the alley outside floods with rainwater, not mud.",hint:"Ask a suspect about the mud on their shoes."}]},{id:"ASHWORTH-309",emoji:"⛵",victim:"Gerald Ashworth",victim_detail:"Reclusive lake property owner. Found floating face-down near his own dock, head wound consistent with impact before drowning.",scene:"The boathouse at the edge of Ashworth's private lake estate, accessible by a narrow dock path.",time_of_death:"Between 7:30 PM and 8:15 PM",method:"Blunt trauma then drowning — struck first, then pushed or fell into the water",suspects:["Priya Sandhu","Felix Bauer"],suspect_emojis:["👩","👨"],suspect_roles:["Ashworth's stepdaughter","Ashworth's stepson"],relationship:"Both adult stepchildren of the victim, both named in a will that Ashworth was about to rewrite to exclude them entirely.",shared_alibi:"Both claim they were in the main house den the entire time, watching a movie together on the projector.",alibi_location:"the den",hard_facts:[{fact:"The projector bulb burned out three days earlier and was never replaced — it cannot project anything.",triggers:["watching the movie","on screen","projector was on","film was playing","watching the film"]},{fact:"There was a 4-second power flicker at 7:40 PM that reset every clock in the house.",triggers:["power never went out","lights stayed on","no flicker","electricity was fine"]},{fact:"The den's only couch faces the cold fireplace, not a screen — and the fireplace was unlit.",triggers:["big couch","comfortable sofa facing the tv","spread out","lay on the couch watching"]},{fact:"The household dog was locked in the den and barking loudly the whole evening.",triggers:["quiet evening","peaceful","dog was calm","no barking","dog wasn't there","silent in the den"]},{fact:"The den windows look directly out over the dock and boathouse path.",triggers:["couldn't see the dock","no view of outside","windows face the garden","can't see the lake"]}],evidence:[{id:"jacket",name:"Damp jacket sleeve",location:"the coat closet",found:false,reveal:"A jacket with one sleeve noticeably damp at the cuff — lake-water damp, not rain damp. The rest of the jacket is dry.",hint:"Ask a suspect about the damp sleeve on their jacket."},{id:"will",name:"Unsigned will draft",location:"Ashworth's study",found:false,reveal:"A will draft on the desk, both stepchildren's names crossed out in pen. A notary appointment was scheduled for the following morning.",hint:"Ask a suspect what they knew about the new will being drafted."},{id:"oar",name:"Splintered oar",location:"the boathouse",found:false,reveal:"A wooden oar with a fresh splinter and a dark stain near the blade — leaning in the corner rather than stored on the rack.",hint:"Ask a suspect whether they went into or near the boathouse that night."},{id:"leash",name:"Dog leash off the hook",location:"near the front door",found:false,reveal:"The dog's leash is missing from its hook by the door — suggesting someone took the dog out, contradicting claims it was locked in the den all evening.",hint:"Ask a suspect whether they took the dog out during the evening."}]}];
+
+const ENDINGS={flawless:{stamp:"CASE CLOSED",cls:"win",headline:"Flawless case.",body:"You didn't just get the right name — you built an airtight dossier. Evidence in hand, contradictions caught, suspicion where it belonged. This one holds up in any courtroom."},solid:{stamp:"CASE CLOSED",cls:"win",headline:"Solid work, detective.",body:"You got the right person and you got there through real investigation — not just a lucky coin flip. There are gaps in your file, but what you built was enough."},lucky:{stamp:"CASE CLOSED",cls:"mid",headline:"Right name. Thin file.",body:"You named the killer — but your case file is almost empty. Barely any evidence gathered, and your suspicion meter was barely tracking before you pulled the trigger. It holds this time. Don't make a habit of guessing."},blind:{stamp:"CASE FILED",cls:"lose",headline:"Wrong call. The killer walks.",body:"You accused without doing the legwork. Barely any evidence, no real read on either suspect. The actual killer just watched an innocent person take the fall."},wrong:{stamp:"CASE FILED",cls:"lose",headline:"Wrong call, despite the effort.",body:"You did real investigating — the leads just pointed you in the wrong direction. The real killer is still out there tonight, free, because someone else paid for their crime."}};
+
+const MAX_QUESTIONS_PER_SUSPECT = 15;
+
+const state={case:null,caseNum:"",suspects:[],active:0,sus:{0:0,1:0},history:[{},{}],evidence:[],busy:false,accuseIdx:null,searchedLocations:new Set()};
+
+function rand(n){return Math.floor(Math.random()*n);}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  document.getElementById(id).classList.add("on");
+}
+
+async function typewrite(el,text,speed){
+  el.textContent="";
+  for(const ch of text){el.textContent+=ch;await sleep(speed);}
+}
+
+async function initIntro(){
+  const caseNum="GA-"+Math.floor(10000+Math.random()*89999);
+  document.getElementById("intro-case-num").textContent="CASE FILE #"+caseNum;
+  const tw=document.getElementById("intro-tw");
+  const lines=["A murder. Two suspects. One shared alibi.","One of them is lying.","You have limited questions per suspect.","You get exactly one accusation."];
+  for(const line of lines){
+    await typewrite(tw,line,38);
+    await sleep(900);
+    tw.textContent="";
+  }
+  tw.textContent="Ready, detective?";
+}
+
+function loadCase(){
+  const c=CASES[rand(CASES.length)];
+  state.case=JSON.parse(JSON.stringify(c));
+  state.caseNum="GA-"+Math.floor(10000+Math.random()*89999);
+  const guiltyIdx=rand(2);
+  state.suspects=[
+    {name:c.suspects[0],emoji:c.suspect_emojis[0],role:c.suspect_roles[0],isGuilty:guiltyIdx===0,history:[],questionsLeft:MAX_QUESTIONS_PER_SUSPECT},
+    {name:c.suspects[1],emoji:c.suspect_emojis[1],role:c.suspect_roles[1],isGuilty:guiltyIdx===1,history:[],questionsLeft:MAX_QUESTIONS_PER_SUSPECT}
+  ];
+  state.sus={0:0,1:0};
+  state.active=0;
+  state.evidence=JSON.parse(JSON.stringify(c.evidence));
+  state.searchedLocations=new Set();
+  state.busy=false;
+  state.accuseIdx=null;
+}
+
+function populateBriefing(){
+  const c=state.case;
+  document.getElementById("brief-case-num").textContent="CASE FILE #"+state.caseNum;
+  document.getElementById("brief-case-title").textContent="THE "+c.victim.split(" ").pop().toUpperCase()+" MURDER";
+  document.getElementById("brief-victim-emoji").textContent=c.emoji;
+  document.getElementById("brief-victim-name").textContent=c.victim;
+  document.getElementById("brief-victim-detail").textContent=c.victim_detail;
+  document.getElementById("brief-tod").textContent=c.time_of_death;
+  document.getElementById("brief-method").textContent=c.method;
+  document.getElementById("brief-scene").textContent=c.scene;
+}
+
+function populateSuspects(){
+  document.getElementById("sus-rel-text").textContent=state.case.relationship;
+  const grid=document.getElementById("sus-grid");
+  grid.innerHTML="";
+  state.suspects.forEach((s,i)=>{
+    const d=document.createElement("div");
+    d.className="sus-card";
+    d.innerHTML=`<div style="display:flex;gap:.75rem;align-items:flex-start"><div class="sus-avatar">${s.emoji}</div><div><div class="sus-name">${esc(s.name)}</div><div class="sus-role">${esc(s.role)}</div></div></div><div class="sus-rel">${esc(state.case.relationship)}</div><div class="sus-alibi">ALIBI: "${esc(state.case.shared_alibi)}"</div>`;
+    grid.appendChild(d);
+  });
+}
+
+function populateGame(){
+  const c=state.case;
+  document.getElementById("game-case-num").textContent="CASE FILE #"+state.caseNum;
+  document.getElementById("game-title").textContent="THE "+c.victim.split(" ").pop().toUpperCase()+" MURDER";
+  renderSusTabs();
+  renderMeters();
+  renderEvidence();
+  setActiveSuspect(0);
+}
+
+function renderSusTabs(){
+  const el=document.getElementById("sus-tabs");
+  el.innerHTML="";
+  state.suspects.forEach((s,i)=>{
+    const d=document.createElement("div");
+    d.className="sus-tab"+(i===state.active?" active":"");
+    d.innerHTML=`<div class="sus-tab-name">${esc(s.name)}</div><div class="sus-tab-role">${esc(s.role.split(",")[0])} (${s.questionsLeft} left)</div>`;
+    d.onclick=()=>setActiveSuspect(i);
+    el.appendChild(d);
+  });
+}
+
+function renderMeters(){
+  const el=document.getElementById("meters");
+  el.innerHTML="";
+  state.suspects.forEach((s,i)=>{
+    const lv=state.sus[i];
+    const col=lv>=65?"#E05C3A":lv>=35?"#E8C547":"#4CAF7D";
+    el.innerHTML+=`<div style="margin-bottom:.6rem"><div class="meter-label"><span>${esc(s.name.split(" ")[0])}</span><span style="color:${col}">${lv}%</span></div><div class="meter-track"><div class="meter-fill" style="width:${lv}%;background:${col}"></div></div></div>`;
+  });
+}
+
+function renderEvidence(){
+  const el=document.getElementById("ev-list");
+  el.innerHTML="";
+  const c=state.case;
+  const locations=[...new Set(c.evidence.map(e=>e.location))];
+  locations.forEach(loc=>{
+    const searched=state.searchedLocations.has(loc);
+    const btn=document.createElement("div");
+    btn.className="ev-item"+(searched?" found":"");
+    if(!searched){
+      btn.innerHTML=`<span class="ev-name">SEARCH</span><span class="ev-loc">${esc(loc)}</span>`;
+      btn.onclick=()=>{state.searchedLocations.add(loc);renderEvidence();};
+    } else {
+      const found=c.evidence.filter(e=>e.location===loc);
+      found.forEach(ev=>{
+        const evEl=document.createElement("div");
+        evEl.className="ev-item found";
+        evEl.style.marginBottom=".3rem";
+        evEl.innerHTML=`<span class="ev-name">${esc(ev.name)}</span><span class="ev-loc" style="font-size:10.5px;color:#9A9;display:block;margin-top:2px">${esc(ev.reveal)}</span>`;
+        evEl.onclick=()=>{document.getElementById("chat-in").value=ev.hint;document.getElementById("chat-in").focus();};
+        el.appendChild(evEl);
+      });
+    }
+    el.appendChild(btn);
+  });
+}
+
+function updateQuestionLimitUI(){
+  const s = state.suspects[state.active];
+  const limEl = document.getElementById("chat-sus-limit");
+  limEl.textContent = `Questions Remaining: ${s.questionsLeft}`;
+  
+  const input = document.getElementById("chat-in");
+  const btn = document.getElementById("btn-send");
+  if(s.questionsLeft <= 0){
+    input.disabled = true;
+    btn.disabled = true;
+    input.placeholder = "No remaining questions for this suspect.";
+  } else {
+    input.disabled = false;
+    btn.disabled = false;
+    input.placeholder = "Type your question and press Enter...";
+  }
+}
+
+function setActiveSuspect(idx){
+  state.active=idx;
+  const s=state.suspects[idx];
+  document.getElementById("chat-avatar").textContent=s.emoji;
+  document.getElementById("chat-sus-name").textContent=s.name;
+  document.getElementById("chat-sus-role").textContent=s.role;
+  renderSusTabs();
+  updateQuestionLimitUI();
+  const msgs=document.getElementById("chat-msgs");
+  msgs.innerHTML='<span class="sr-only">Interrogation transcript</span>';
+  if(s.history.length===0){
+    addSysMsg(s.name+" has entered the interrogation room.");
+  } else {
+    s.history.forEach(t=>{
+      if(t.role === "user") addDetMsg(t.parts[0].text,false);
+      else addSusMsg(s.name,s.emoji,t.parts[0].text,false);
+    });
+    msgs.scrollTop=msgs.scrollHeight;
+  }
+}
+
+function addSysMsg(text){
+  const el=document.createElement("div");
+  el.className="msg-sys";el.textContent=text;
+  const msgs=document.getElementById("chat-msgs");
+  msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function addContraMsg(text){
+  const el=document.createElement("div");
+  el.className="msg-contra";el.textContent="CONTRADICTION DETECTED: "+text;
+  const msgs=document.getElementById("chat-msgs");
+  msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function addDetMsg(text,scroll){
+  const el=document.createElement("div");
+  el.className="msg-det";el.textContent=text;
+  const msgs=document.getElementById("chat-msgs");
+  msgs.appendChild(el);
+  if(scroll!==false) msgs.scrollTop=msgs.scrollHeight;
+}
+
+function addSusMsg(name,emoji,text,scroll){
+  const el=document.createElement("div");
+  el.className="msg-sus";
+  el.innerHTML=`<div class="msg-sus-name">${esc(name.toUpperCase())}</div><div class="msg-sus-bubble">${esc(text)}</div>`;
+  const msgs=document.getElementById("chat-msgs");
+  msgs.appendChild(el);
+  if(scroll!==false) msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showTyping(){
+  const el=document.createElement("div");
+  el.className="typing";el.id="typing-ind";el.textContent="...thinking...";
+  const msgs=document.getElementById("chat-msgs");
+  msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
+}
+function hideTyping(){const el=document.getElementById("typing-ind");if(el)el.remove();}
+
+function detectContradiction(reply){
+  const r=reply.toLowerCase();
+  for(const hf of state.case.hard_facts){
+    for(const t of hf.triggers){
+      if(r.includes(t.toLowerCase()))return hf.fact;
+    }
+  }
+  return null;
+}
+
+function buildPrompt(suspectIdx,userMsg){
+  const s=state.suspects[suspectIdx];
+  const other=state.suspects[1-suspectIdx].name;
+  const c=state.case;
+  const facts=c.hard_facts.map(hf=>"- "+hf.fact).join("\n");
+  const pressure=state.sus[suspectIdx]>=65?" You're rattled now — more defensive, shorter answers, real fear leaking through.":(state.sus[suspectIdx]>=35?" You're getting guarded and clipped in your answers.":"");
+  if(!s.isGuilty){
+    return `You are ${s.name}, ${s.role}. You are being interrogated about the murder of ${c.victim} at ${c.scene}. Time of death: ${c.time_of_death}.\n\nYou are INNOCENT and telling the truth. Your alibi (TRUE): ${c.shared_alibi}. You were with ${other} the whole time.\n\nReal facts about where you were:\n${facts}\n\nRules: Stay in character. Never break character or mention AI/game. You're nervous but truthful. Stay consistent with the facts above. 1-3 sentences, conversational. Don't volunteer guilt info about the other person.${pressure}`;
+  } else {
+    return `You are ${s.name}, ${s.role}. You are being interrogated about the murder of ${c.victim} at ${c.scene}. Time of death: ${c.time_of_death}.\n\nYou are GUILTY. You're maintaining a FALSE alibi: ${c.shared_alibi}. You claim you were with ${other} but you were actually committing the murder.\n\nBecause the alibi is false, you have NO real memory of these environmental details (they're the truth you don't know):\n${facts}\n\nRules: Stay in character. Never admit guilt unless cornered with multiple specific contradictions. When pressed on sensory details of the alibi location, CONFABULATE naturally — invent plausible-sounding details. Your invented details will often accidentally contradict the real facts above; that's fine and expected. Get more defensive/irritable under pressure. 1-3 sentences, conversational.${pressure}`;
+  }
+}
+
+async function sendMessage(){
+  if(state.busy)return;
+  const idx=state.active;
+  const s=state.suspects[idx];
+  
+  if(s.questionsLeft <= 0) return;
+
+  const apiKey = document.getElementById("api-key-input").value.trim();
+  if(!apiKey){
+    alert("Please enter a valid Gemini API Key in the setup panel first.");
+    return;
+  }
+
+  const input=document.getElementById("chat-in");
+  const text=input.value.trim();
+  if(!text)return;
+  input.value="";
+  
+  addDetMsg(text);
+  s.history.push({role:"user", parts:[{text:text}]});
+  s.questionsLeft--;
+  updateQuestionLimitUI();
+  renderSusTabs();
+
+  state.busy=true;
+  document.getElementById("btn-send").disabled=true;
+  input.disabled=true;
+  showTyping();
+  
+  try{
+    const reqContents = [...s.history];
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    
+    const res = await fetch(url, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        contents: reqContents,
+        systemInstruction: { parts: [{ text: buildPrompt(idx, text) }] },
+        generationConfig: { maxOutputTokens: 220, temperature: 0.7 }
+      })
+    });
+    
+    const data=await res.json();
+    if(!res.ok){
+      if(res.status === 429) {
+        throw new Error("Rate limit exceeded. Please wait a moment before trying again.");
+      }
+      throw new Error((data.error && data.error.message) || "HTTP " + res.status);
+    }
+    
+    const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "...";
+    const cleanReply = replyText.trim();
+    
+    hideTyping();
+    addSusMsg(s.name,s.emoji,cleanReply);
+    s.history.push({role:"model", parts:[{text:cleanReply}]});
+    
+    if(s.isGuilty){
+      const contra=detectContradiction(cleanReply);
+      if(contra){
+        state.sus[idx]=Math.min(100,state.sus[idx]+20);
+        addContraMsg(contra.substring(0,80)+(contra.length>80?"...":""));
+      } else {
+        state.sus[idx]=Math.min(100,state.sus[idx]+3);
+      }
+    } else {
+      state.sus[idx]=Math.max(0,state.sus[idx]-1);
+    }
+    renderMeters();
+  }catch(err){
+    hideTyping();
+    addSysMsg("Interrogation error — "+err.message.slice(0,60));
+    s.questionsLeft++;
+    updateQuestionLimitUI();
+    renderSusTabs();
+  }finally{
+    state.busy=false;
+    updateQuestionLimitUI();
+  }
+}
+
+function openAccusePanel(){
+  const ch=document.getElementById("accuse-choices");
+  ch.innerHTML="";
+  state.suspects.forEach((s,i)=>{
+    const d=document.createElement("div");
+    d.className="accuse-choice";
+    d.innerHTML=`<div style="font-size:22px;margin-bottom:.3rem">${s.emoji}</div>${esc(s.name)}`;
+    d.onclick=()=>{
+      document.querySelectorAll(".accuse-choice").forEach(c=>c.classList.remove("sel"));
+      d.classList.add("sel");
+      state.accuseIdx=i;
+      document.getElementById("btn-confirm-accuse").disabled=false;
+    };
+    ch.appendChild(d);
+  });
+  document.getElementById("btn-confirm-accuse").disabled=true;
+  state.accuseIdx=null;
+  document.getElementById("accuse-panel").classList.add("on");
+}
+
+function resolveVerdict(){
+  if(state.accuseIdx===null)return;
+  document.getElementById("accuse-panel").classList.remove("on");
+  const guiltyIdx=state.suspects.findIndex(s=>s.isGuilty);
+  const innocentIdx=1-guiltyIdx;
+  const won=state.accuseIdx===guiltyIdx;
+  const evSearched=state.searchedLocations.size;
+  const evTotal=new Set(state.case.evidence.map(e=>e.location)).size;
+  const evRatio=evTotal>0?evSearched/evTotal:0;
+  const susCorrect=state.sus[guiltyIdx]>state.sus[innocentIdx];
+  let endKey;
+  if(won&&evRatio>=0.6&&susCorrect) endKey="flawless";
+  else if(won&&(evRatio>=0.3||susCorrect)) endKey="solid";
+  else if(won) endKey="lucky";
+  else if(evRatio<0.3) endKey="blind";
+  else endKey="wrong";
+  const end=ENDINGS[endKey];
+  document.getElementById("verdict-case-title").textContent="THE "+state.case.victim.split(" ").pop().toUpperCase()+" MURDER";
+  const stamp=document.getElementById("verdict-stamp");
+  stamp.textContent=end.stamp;stamp.className="stamp-text "+end.cls;
+  document.getElementById("verdict-headline").textContent=end.headline;
+  const cards=document.getElementById("verdict-cards");
+  const guilty=state.suspects[guiltyIdx];
+  const innocent=state.suspects[innocentIdx];
+  cards.innerHTML=`<div class="v-card"><div class="v-card-label">The killer</div><div class="v-card-val">${guilty.emoji} <strong>${esc(guilty.name)}</strong><br><span style="color:var(--c-muted);font-size:11.5px">${esc(guilty.role)}</span></div></div><div class="v-card"><div class="v-card-label">The innocent</div><div class="v-card-val">${innocent.emoji} <strong>${esc(innocent.name)}</strong><br><span style="color:var(--c-muted);font-size:11.5px">${esc(innocent.role)}</span></div></div><div class="v-card"><div class="v-card-label">Evidence found</div><div class="v-card-val">${evSearched} of ${evTotal} locations searched</div></div><div class="v-card"><div class="v-card-label">Suspicion read</div><div class="v-card-val">${susCorrect?"On target — meter pointed correctly":"Off target — misread the room"}</div></div>`;
+  document.getElementById("verdict-reveal").innerHTML=end.body+`<br><br><strong>${esc(guilty.name)}</strong> was the killer. <strong>${esc(innocent.name)}</strong> was telling the truth the entire time.`;
+  showScreen("s-verdict");
+}
+
+function startNewGame(){
+  loadCase();
+  populateBriefing();
+  populateSuspects();
+  populateGame();
+  showScreen("s-brief");
+}
+
+document.getElementById("btn-open-case").onclick=()=>{
+  loadCase();
+  populateBriefing();
+  showScreen("s-brief");
+};
+document.getElementById("btn-meet-suspects").onclick=()=>{
+  populateSuspects();
+  showScreen("s-suspects");
+};
+document.getElementById("btn-begin-interrogation").onclick=()=>{
+  populateGame();
+  showScreen("s-game");
+};
+document.getElementById("btn-accuse").onclick=openAccusePanel;
+document.getElementById("btn-cancel-accuse").onclick=()=>document.getElementById("accuse-panel").classList.remove("on");
+document.getElementById("btn-confirm-accuse").onclick=resolveVerdict;
+document.getElementById("btn-send").onclick=sendMessage;
+document.getElementById("chat-in").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage();});
+document.getElementById("btn-new-case").onclick=startNewGame;
+
+initIntro();
+</script>
+</body>
+</html>
